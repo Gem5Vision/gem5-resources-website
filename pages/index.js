@@ -4,6 +4,7 @@ import { Container } from 'react-bootstrap'
 import Seachbox from '@/components/searchbox'
 import Image from 'next/image'
 import logo from 'public/gem5ColorVert.png'
+import MyCards from '@/components/cards'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +27,7 @@ export default function Home() {
         <p className='primary mt-5 text-center'>
           gem5 resources is a repository providing sources for artifacts known and proven compatible with the gem5 architecture simulator. These resources are not necessary for the compilation or running of gem5, but may aid users in producing certain simulations
         </p>
+        <MyCards/>
       </Container>
     </>
   )
