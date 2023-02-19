@@ -2,11 +2,11 @@
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  assetPrefix: isProd ? '/gem5-resources-website/' : '',
+  /* assetPrefix: isProd ? '/gem5-resources-website/' : '',
   basePath: isProd ? '/gem5-resources-website' : '',
   images: {
     unoptimized: true,
     loader: 'imgix',
     path: '',
-  },
+  }, */
 }
