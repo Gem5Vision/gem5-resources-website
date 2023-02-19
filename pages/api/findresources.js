@@ -7,7 +7,6 @@ export async function getResources_mongodb(queryObject) {
     const db = client.db('gem5-vision');
     const collection = db.collection('resources');
     const query = queryObject.query.trim();
-    const keywords = query.split(" ");
     let results = await collection.find({ $or: [{ id: { $regex: query, $options: 'i' } }, { description: { $regex: query, $options: 'i' } }, { resources: { $regex: query, $options: 'i' } }] }).toArray();
 
     return results;
