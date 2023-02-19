@@ -8,29 +8,7 @@ export async function getResources_mongodb(queryObject) {
     const collection = db.collection('resources');
     const query = queryObject.query.trim();
     const keywords = query.split(" ");
-    // get resources that contain the query in their id, description, or resources
-    // match any of the keywords and sort by relevance
-    let results = await collection.aggregate([
-      {
-        $search: {
-          "autocomplete": {
-            "query": query,
-            "path": "id",
-            "fuzzy": {
-              "maxEdits": 2,
-              "prefixLength": 3
-            }
-          }
-        }
-      },
-      {
-        $sort: {
-          "score": {
-            "$meta": "textScore"
-          }
-        }
-      }
-    ]).toArray();
+    let results = await collection.find({ $or: [{ id: { $regex: query, $options: 'i' } }, { description: { $regex: query, $options: 'i' } }, { resources: { $regex: query, $options: 'i' } }] }).toArray();
 
     return results;
   }

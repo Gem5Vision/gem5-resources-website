@@ -123,8 +123,8 @@ function Resources(props) {
     )
 }
 
-// export async function getServerSideProps({ query }) {
-Resources.getInitialProps = async ({ query }) => {
+export async function getServerSideProps({ query }) {
+    // Resources.getInitialProps = async ({ query }) => {
     if (!query.q) {
         query.q = ''
     }
@@ -165,12 +165,12 @@ Resources.getInitialProps = async ({ query }) => {
     }
 
     return {
-        // props: {
-        resources: resources,
-        filters: filterModified,
-        query: queryObject.query,
-        fullQuery: query.q
-        // }
+        props: {
+            resources: resources,
+            filters: filterModified,
+            query: queryObject.query,
+            fullQuery: query.q
+        }
     };
 };
 

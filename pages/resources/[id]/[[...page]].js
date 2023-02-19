@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { Row, Col, Container } from 'react-bootstrap'
 import { SSRProvider } from "@react-aria/ssr";
 import { getResource } from '../../api/getresource'
-import { getResources } from '../../api/findresources'
 import ResourceTab from '@/components/resource-tab'
 
 function Resource({ resource }) {
@@ -28,7 +27,7 @@ function Resource({ resource }) {
     )
 }
 
-export async function getStaticPaths() {
+/* export async function getStaticPaths() {
     const resources = await getResources({ query: '' })
     // create paths for all /resources/[id]/[...page]
     const paths = resources.map((resource) => ({
@@ -37,15 +36,13 @@ export async function getStaticPaths() {
             page: ['']
         },
     }))
-    /* const paths = [
-    ] */
     return { paths, fallback: true }
-}
+} */
 
 
 
-// export async function getServerSideProps(ctx) {
-export async function getStaticProps(ctx) {
+export async function getServerSideProps(ctx) {
+// export async function getStaticProps(ctx) {
     // Resource.getInitialProps = async (ctx) => {
     const id = ctx.params.id
     // const id = ctx.query.id
