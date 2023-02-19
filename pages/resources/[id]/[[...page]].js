@@ -44,8 +44,8 @@ function Resource({ resource }) {
 export async function getServerSideProps(ctx) {
 // export async function getStaticProps(ctx) {
     // Resource.getInitialProps = async (ctx) => {
-    const id = ctx.params.id
-    // const id = ctx.query.id
+    // const id = ctx.params.id
+    const id = ctx.query.id
     // ctx.res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate')
     let resource = await getResource(id)
     if (resource.error) {

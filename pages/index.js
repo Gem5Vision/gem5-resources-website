@@ -6,7 +6,6 @@ import Image from 'next/image'
 import logo from 'public/gem5ColorVert.png'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const router = useRouter()
