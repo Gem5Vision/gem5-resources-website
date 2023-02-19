@@ -1,4 +1,44 @@
 import { fetchResources } from "./resources";
+import clientPromise from '@/lib/mongodb';
+
+export async function getResources_mongodb(queryObject) {
+  try {
+    const client = await clientPromise;
+    const db = client.db('gem5-vision');
+    const collection = db.collection('resources');
+    const query = queryObject.query.trim();
+    const keywords = query.split(" ");
+    // get resources that contain the query in their id, description, or resources
+    // match any of the keywords and sort by relevance
+    let results = await collection.aggregate([
+      {
+        $search: {
+          "autocomplete": {
+            "query": query,
+            "path": "id",
+            "fuzzy": {
+              "maxEdits": 2,
+              "prefixLength": 3
+            }
+          }
+        }
+      },
+      {
+        $sort: {
+          "score": {
+            "$meta": "textScore"
+          }
+        }
+      }
+    ]).toArray();
+
+    return results;
+  }
+  catch (err) {
+    console.log(err);
+  }
+  return null;
+}
 
 export async function getResources(queryObject) {
   const resources = await fetchResources();
@@ -31,6 +71,6 @@ export default async function handler(req, res) {
   // res.status(200).json(resources);
   // find the resources that contain the query in their id
   let query = req.query.q;
-  let results = await getResources(query);
+  let results = await getResources_mongodb({ query: query });
   res.status(200).json(results);
 }
