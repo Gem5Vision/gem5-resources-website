@@ -8,6 +8,8 @@ export default async function handler(req, res) {
         const client = await clientPromise;
         const db = client.db('gem5-vision');
         const collection = db.collection('resources');
+        // clear the collection
+        await collection.deleteMany({});
         // push resources to mongodb
         await collection.insertMany(resources);
         return res.status(200).json(resources);
