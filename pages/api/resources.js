@@ -14,7 +14,7 @@ export async function fetchResourcesMongoDB() {
 
 export async function fetchResources() {
     return fetch(
-        "https://raw.githubusercontent.com/Gem5Vision/json-to-mongodb/main/resources.json"
+        "https://raw.githubusercontent.com/Gem5Vision/json-to-mongodb/versions/resources.json"
     ).then((res) => res.json());
 }
 
