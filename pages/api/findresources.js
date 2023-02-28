@@ -123,9 +123,9 @@ async function getResourcesMongoDB(queryObject, currentPage, pageSize) {
       },
     }); */
     pipeline.unshift({
-      "$addFields": {
-        "score": {
-          "$meta": "searchScore"
+      $addFields: {
+        "highlights": {
+          "$meta": "searchHighlights"
         }
       }
     });
@@ -139,6 +139,9 @@ async function getResourcesMongoDB(queryObject, currentPage, pageSize) {
             maxExpansions: 100,
           },
         },
+        highlight: {
+          "path": ["id", "description"]
+        }
       },
     });
   }
