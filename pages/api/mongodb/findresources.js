@@ -31,7 +31,11 @@ function getSort(sort) {
  * @param {json} filters The filters object.
  * @returns {JSX.Element} The JSX element to be rendered.
  */
-export default async function getResourcesMongoDB(queryObject, currentPage, pageSize) {
+export default async function getResourcesMongoDB(
+  queryObject,
+  currentPage,
+  pageSize
+) {
   let resources = [];
   const access_token = await getToken();
   if (queryObject.query.trim() === "") {
@@ -127,48 +131,62 @@ export default async function getResourcesMongoDB(queryObject, currentPage, page
       },
     }); */
     pipeline.unshift({
-      "$addFields": {
-        "score": {
-          "$meta": "searchScore"
-        }
-      }
+      $addFields: {
+        score: {
+          $meta: "searchScore",
+        },
+      },
     });
     pipeline.unshift({
       $search: {
         index: "default",
-        text: {
+        compound: {
+          should: [
+            {
+              text: {
+                query: queryObject.query,
+                path: "description",
+                fuzzy: {
+                  maxEdits: 2,
+                },
+              },
+            },
+            {
+              text: {
+                query: queryObject.query,
+                path: "id",
+                score: { boost: { value: 100 } },
+              },
+            },
+          ],
+        },
+        /* text: {
           query: queryObject.query,
-          path: {
-            wildcard: "*",
-          },
+          path: ["id", "description", "tags", "category", "architecture"],
           fuzzy: {
             maxEdits: 2,
-            maxExpansions: 100,
           },
-        },
+        }, */
       },
     });
   }
-  const res = await fetch(
-    `${process.env.MONGODB_URI}/action/aggregate`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // 'api-key': 'pKkhRJGJaQ3NdJyDt69u4GPGQTDUIhHlx4a3lrKUNx2hxuc8uba8NrP3IVRvlzlo',
-        "Access-Control-Request-Headers": "*",
-        // 'origin': 'https://gem5vision.github.io',
-        Authorization: "Bearer " + access_token,
-      },
-      // also apply filters on
-      body: JSON.stringify({
-        dataSource: "gem5-vision",
-        database: "gem5-vision",
-        collection: process.env.COLLECTION,
-        pipeline: pipeline,
-      }),
-    }
-  ).catch((err) => console.log(err));
+  const res = await fetch(`${process.env.MONGODB_URI}/action/aggregate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // 'api-key': 'pKkhRJGJaQ3NdJyDt69u4GPGQTDUIhHlx4a3lrKUNx2hxuc8uba8NrP3IVRvlzlo',
+      "Access-Control-Request-Headers": "*",
+      // 'origin': 'https://gem5vision.github.io',
+      Authorization: "Bearer " + access_token,
+    },
+    // also apply filters on
+    body: JSON.stringify({
+      dataSource: "gem5-vision",
+      database: "gem5-vision",
+      collection: process.env.COLLECTION,
+      pipeline: pipeline,
+    }),
+  }).catch((err) => console.log(err));
   resources = await res.json();
   return [
     resources["documents"],
