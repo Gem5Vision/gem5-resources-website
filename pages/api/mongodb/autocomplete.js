@@ -42,6 +42,7 @@ export default async function Autocomplete(query, pageSize) {
       ],
     }),
   }).catch((err) => console.log(err));
+
   let resources = await res.json();
   return resources["documents"].slice(0, pageSize);
 }
