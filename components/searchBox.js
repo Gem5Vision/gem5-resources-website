@@ -16,6 +16,7 @@ import Autocomplete from "@/pages/api/mongodb/autocomplete";
 const SearchBox = forwardRef((props, ref) => {
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const SavedSearchHistoryLimit = 5;
 
   useEffect(() => {
     if (props.query) {
@@ -37,6 +38,7 @@ const SearchBox = forwardRef((props, ref) => {
     e.preventDefault();
     setShowPredictions(false);
     console.log(e.target[0].value);
+    saveSearch(e.target[0].value);
     if (props.callback) {
       props.callback(e.target[0].value);
     } else {
@@ -61,6 +63,30 @@ const SearchBox = forwardRef((props, ref) => {
     } else {
       setShowPredictions(false);
     }
+  }
+
+  function saveSearch(query) {
+    localStorage.setItem("CookieConsent", JSON.stringify({'userPreference': 'all'}));
+    let userPreference = JSON.parse(localStorage.getItem("CookieConsent")).userPreference;
+
+    if (userPreference !== "all" && userPreference !== "preference") {
+      return;
+    }
+
+    let searchHistory = localStorage.getItem("SearchHistory");
+    let savedSearches = JSON.parse(searchHistory);
+
+    if (searchHistory == null || savedSearches.length === 0) {
+      localStorage.setItem("SearchHistory", JSON.stringify([query]));
+      return;
+    }
+
+    if (savedSearches.length === SavedSearchHistoryLimit) { 
+      savedSearches.pop();
+    }
+
+    savedSearches.unshift(query);
+    localStorage.setItem("SearchHistory", JSON.stringify(savedSearches));
   }
 
   return (
@@ -96,6 +122,7 @@ const SearchBox = forwardRef((props, ref) => {
                   });
                   console.log(filters); */
                   // setSearch(filters.join(" ") + " " + prediction.id);
+                  saveSearch(prediction.id);
                   if (props.callback) {
                     props.callback(prediction.id);
                   } else {
