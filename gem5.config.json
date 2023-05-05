@@ -5,7 +5,7 @@
             "gem5-resources": {
                 "dataSource": "gem5-vision",
                 "database": "gem5-vision",
-                "collection": "resources",
+                "collection": "versions_test",
                 "url": "https://data.mongodb-api.com/app/data-ejhjf/endpoint/data/v1",
                 "name": "data-ejhjf",
                 "apiKey": "OIi5bAP7xxIGK782t8ZoiD2BkBGEzMdX3upChf9zdCxHSnMoiTnjI22Yw5kOSgy9",

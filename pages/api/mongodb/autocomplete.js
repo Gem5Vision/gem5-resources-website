@@ -9,22 +9,22 @@ import getToken from "./getToken";
  * @returns {JSX.Element} The JSX element to be rendered.
  */
 export default async function Autocomplete(query, pageSize) {
-  const access_token = await getToken();
+  const dbKey = Object.keys(process.env.PRIVATE_RESOURCES)[0];
+  const access_token = await getToken(dbKey);
+  const database = process.env.PRIVATE_RESOURCES[dbKey];
 
-  const res = await fetch(`${process.env.MONGODB_URI}/action/aggregate`, {
+  const res = await fetch(`${database.url}/action/aggregate`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // 'api-key': 'pKkhRJGJaQ3NdJyDt69u4GPGQTDUIhHlx4a3lrKUNx2hxuc8uba8NrP3IVRvlzlo',
       "Access-Control-Request-Headers": "*",
-      // 'origin': 'https://gem5vision.github.io',
       Authorization: "Bearer " + access_token,
     },
     // also apply filters on
     body: JSON.stringify({
-      dataSource: "gem5-vision",
-      database: "gem5-vision",
-      collection: process.env.COLLECTION,
+      dataSource: database.dataSource,
+      database: database.database,
+      collection: database.collection,
       pipeline: [
         {
           $search: {
