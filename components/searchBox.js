@@ -74,6 +74,7 @@ const SearchBox = forwardRef((props, ref) => {
       setSearchPredictions(res);
       setShowPredictions(true);
     } else {
+      setSearchPredictions([]);
       setShowPredictions(false);
     }
   }
@@ -165,7 +166,7 @@ const SearchBox = forwardRef((props, ref) => {
           )}
           onFocus={(e) => {
             setShowSearchHistory(true);
-            // setShowPredictions(true);
+            setShowPredictions(true);
           }}
         />
 
