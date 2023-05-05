@@ -39,10 +39,19 @@ export default async function Autocomplete(query, pageSize) {
             },
           },
         },
+        {
+          $group: {
+            _id: "$id",
+            id: { $first: "$id" },
+          },
+        },
+        {
+          $limit: pageSize,
+        },
       ],
     }),
   }).catch((err) => console.log(err));
 
   let resources = await res.json();
-  return resources["documents"].slice(0, pageSize);
+  return resources["documents"];
 }

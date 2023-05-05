@@ -70,6 +70,7 @@ const SearchBox = forwardRef((props, ref) => {
     if (e.target.value.length > 2) {
       // const res = await getResources({ query: e.target.value }, 1, 5);
       const res = await Autocomplete(e.target.value, 5);
+      setSearchPredictions([]);
       setSearchPredictions(res);
       setShowPredictions(true);
     } else {
