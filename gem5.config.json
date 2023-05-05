@@ -1,0 +1,82 @@
+{
+    "config": {
+        "schemaUrl": "https://raw.githubusercontent.com/Gem5Vision/json-to-mongodb/main/schema/schema.json",
+        "resources": {
+            "gem5-resources": {
+                "dataSource": "gem5-vision",
+                "database": "gem5-vision",
+                "collection": "resources",
+                "url": "https://data.mongodb-api.com/app/data-ejhjf/endpoint/data/v1",
+                "name": "data-ejhjf",
+                "apiKey": "OIi5bAP7xxIGK782t8ZoiD2BkBGEzMdX3upChf9zdCxHSnMoiTnjI22Yw5kOSgy9",
+                "isMongo": true
+            }
+        }
+    },
+    "ui": {
+        "tabs": {
+            "simpoint": {
+                "tab": [],
+                "additionalInfo": [
+                    "simpoint_interval",
+                    "simpoint_list",
+                    "weight_list",
+                    "warmup_interval",
+                    "workload_name"
+                ],
+                "metadata": []
+            },
+            "workload": {
+                "tab": [],
+                "additionalInfo": [],
+                "metadata": [
+                    "function",
+                    "resource_directory"
+                ]
+            },
+            "binary": {
+                "tab": [
+                    "arguments"
+                ],
+                "additionalInfo": [],
+                "metadata": []
+            },
+            "diskimage": {
+                "tab": [],
+                "additionalInfo": [],
+                "metadata": [
+                    "root_partition"
+                ]
+            },
+            "kernel": {
+                "tab": [
+                    "arguments"
+                ],
+                "additionalInfo": [],
+                "metadata": []
+            },
+            "simpoint-directory": {
+                "tab": [],
+                "additionalInfo": [
+                    "simpoint_interval",
+                    "simpoint_list",
+                    "weight_list",
+                    "warmup_interval",
+                    "workload_name"
+                ],
+                "metadata": [
+                    "id",
+                    "description",
+                    "tags"
+                ]
+            },
+            "looppoint-json": {
+                "tab": [],
+                "additionalInfo": [],
+                "metadata": [
+                    "region_id"
+                ]
+            }
+        }
+    }
+}

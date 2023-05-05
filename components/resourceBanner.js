@@ -8,7 +8,7 @@ import sparc from "/public/sparc.png";
 import mips from "/public/mips.png";
 import power from "/public/power.png";
 import Link from 'next/link';
-import { Badge, Placeholder, Row } from 'react-bootstrap';
+import { Badge, Button, Placeholder, Row } from 'react-bootstrap';
 import invalid from "/public/null.svg";
 
 /**
@@ -59,15 +59,15 @@ export default function Banner({ resource, setShowMetadata }) {
                     </Placeholder>
                 </div>
                 <div className='d-flex flex-row gap-1'>
-                    <h6 style={{ lineHeight: 'inherit', margin: '0' }}>
+                    <h6 style={{ lineHeight: 'inherit', margin: '0' }} className="main-text-semi">
                         VERSION
                     </h6>
                     <Placeholder as="p" animation="glow" style={{ width: '40px' }}>
                         <Placeholder xs={12} />
                     </Placeholder>
                 </div>
-                <div className='d-flex flex-row gap-1'>
-                    <h6 style={{ lineHeight: 'inherit', margin: '0' }}>
+                <div className='d-flex flex-row gap-1 align-items-center'>
+                    <h6 style={{ lineHeight: 'inherit', margin: '0' }} className="main-text-semi">
                         TAGS
                     </h6>
                     <Placeholder as="p" animation="glow" style={{ width: '40px' }}>
@@ -77,53 +77,52 @@ export default function Banner({ resource, setShowMetadata }) {
             </div>
         </> :
             <>
+                <h2 className="main-text-title-bold text-muted" aria-label="Database Name">
+                    {resource.database ? `${resource.database} /` : 'gem5-resources /'}
+                </h2>
                 <CopyIcon>
-                    <h2 className='text-muted pe-3 mb-3'>
+                    <h2 className='text-muted pe-3 mb-3 page-title' aria-label="Resource ID">
                         {resource.id}
                     </h2>
                 </CopyIcon>
 
-                <button className={styles.expand_metadata} onClick={() => { setShowMetadata(true) }}>
+                <Button className={styles.expand_metadata} onClick={() => { setShowMetadata(true) }}>
                     <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" stroke='#0095AF'><path d="M21.883 12l-7.527 6.235.644.765 9-7.521-9-7.479-.645.764 7.529 6.236h-21.884v1h21.883z" /></svg>
-                </button>
+                </Button>
 
-                <div className='d-flex align-items-center mb-2'>
-                    <h5 className='text-muted resource-date-published mb-0'>
-                        {/* {resource.date_published} */}
-                        Published 6 months ago
-                    </h5>
-                    <div className={styles.dot}></div>
-                    <h5 className='mb-0' style={{ fontSize: '0px' }}>
-                        <Link href={`/category/${resource.category}`} className='primary resource-category'>
-                            {String(resource.category).charAt(0).toUpperCase() + String(resource.category).substring(1) ?? "Unknown"}
-                        </Link>
-                    </h5>
+                <div className='d-flex align-items-center gap-2 mb-2'>
+                    <div className='d-flex align-items-center'>
+                        <h5 className='text-muted secondary-text-semi mb-0 me-1'>
+                            Category:
+                        </h5>
+                        {/* <div className={styles.dot}></div> */}
+                        <h5 className='mb-0' style={{ fontSize: '0px' }}>
+                            <Link href={`/category#${resource.category}`} className='primary secondary-text-semi' aria-label="Resource Category">
+                                {String(resource.category).charAt(0).toUpperCase() + String(resource.category).substring(1) ?? "Unknown"}
+                            </Link>
+                        </h5>
+                    </div>
                 </div>
-                <div className='d-flex gap-4 mb-2'>
-                    <p className="d-flex flex-row align-items-center gap-1 mt-0 mb-0">
+                <div className='d-flex gap-4 mb-2 flex-wrap'>
+                    <p className="d-flex flex-row align-items-center gap-1 mt-0 mb-0 main-text-semi">
                         <Image
                             src={getIcon(resource.architecture)}
                             alt={resource.architecture ?? "Unknown"}
                             height={15}
                         />
-                        <Link className='text-decoration-none text-black' href={'/resources?q=architecture:' + resource.architecture}>
+                        <Link className='text-black interactDecoration' href={'/resources?q=architecture:' + resource.architecture} aria-label="Resource Architecture">
                             {resource.architecture ?? "NONE"}
                         </Link>
                     </p>
-                    <div className='d-flex flex-row gap-1'>
-                        <h6 style={{ lineHeight: 'inherit', margin: '0' }}>
+                    <div className='d-flex flex-row gap-1 align-items-center'>
+                        <h6 style={{ lineHeight: 'inherit', margin: '0' }} className="main-text-semi">
                             VERSION
                         </h6>
-                        {
-                            resource.versions && resource.versions.length === 0 ? "None" :
-                                <Link className='text-decoration-none text-black' href={'/resources?q=versions:' + (resource.versions && (resource.versions.length > 1 ? resource.versions[1].version : resource.versions[0].version))}>
-                                    {
-                                        resource.versions && (resource.versions.length > 1 ? resource.versions[1].version : resource.versions[0].version)
-                                    }
-                                </Link>
-                        }
+                        <h6 className='text-black main-text-regular m-0' aria-label="Resource Version">
+                            {resource.resource_version}
+                        </h6>
                     </div>
-                    <div className='d-flex flex-row gap-1'>
+                    <div className='d-flex flex-row gap-1 align-items-center' aria-label="Resource Tags">
                         <h6 style={{ lineHeight: 'inherit', margin: '0' }}>
                             TAGS
                         </h6>
@@ -133,7 +132,7 @@ export default function Banner({ resource, setShowMetadata }) {
                                     <Link key={tag}
                                         href={'/resources?q=tags:' + tag}
                                     >
-                                        <Badge pill bg='primary' >
+                                        <Badge bg='primary' className='interactDecoration' aria-label={"Tag " + tag}>
                                             {tag}
                                         </Badge>
                                     </Link>

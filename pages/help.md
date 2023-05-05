@@ -37,13 +37,13 @@ When you search for a resource, the search algorithm first applies the [filters]
 
 These are all the sorting options available:
 
-- Relevence
+- Relevance
   - Best matches the search query
 - Date
   - Data when the resource was published
 - Version
   - Newest to oldest version introduced in ([dev, 22.1] > [dev, 22.1, 22.0])
-- Name Ascending
+- Resource ID Ascending
   - Dictionary order A->Z
-- Name Descending
+- Resource ID Descending
   - Disctionary order Z->A

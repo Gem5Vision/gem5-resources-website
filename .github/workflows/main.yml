@@ -3,35 +3,36 @@ name: Deploy to Github Pages
 on:
   push:
     branches:
-      - static-website
-
-  workflow_dispatch:
+      - main
+# on: [push]
+permissions:
+  contents: write
 
 jobs:
   deployment:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
           cache: "npm"
-
+      - name: Install Node Modules
+        run: npm ci
+      - name: Jest
+        run: npm run test:ci
+      - name: Cypress run
+        run: npm run e2e:headless
       - name: Build
         run: |
-          echo '${{secrets.IS_MONGODB_ENABLED}} ${{secrets.MONGODB_API_KEY}}'
-          echo '${{env.IS_MONGODB_ENABLED}} ${{env.MONGODB_API_KEY}}'
-          npm i
           npm run build
           npm run export
-        env:
-          IS_MONGODB_ENABLED: ${{secrets.IS_MONGODB_ENABLED}}
-          MONGODB_API_KEY: ${{secrets.MONGODB_API_KEY}}
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        # https://github.com/JamesIves/github-pages-deploy-action
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          deploy_key: ${{ secrets.DEPLOY_TOKEN }}
-          publish_dir: ./out
+          branch: gh-pages
+          folder: out

@@ -6,6 +6,7 @@ import { getResource } from '../../api/getresource'
 import ResourceTab from '@/components/resourceTab'
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import getTabs from '@/pages/api/getTabs'
 
 /**
  * @component
@@ -17,25 +18,62 @@ function Resource() {
     const [loading, setLoading] = useState(true)
     const [showMetadata, setShowMetadata] = useState(false)
     const [isTablet, setIsTablet] = useState(false)
+    const [requiredTabs, setRequiredTabs] = useState([]);
+    const [additionalInfoTabs, setAdditionalInfoTabs] = useState([]);
+    const [metaFields, setMetaFields] = useState([]);
     const router = useRouter()
 
     useEffect(() => {
-        async function fetchResource(id) {
-            setLoading(true)
-            let resource = await getResource(id);
-            if (resource.error) {
-                router.push(`/404`)
+        if (Object.keys(resource).length === 0) return;
+        getTabs(resource).then((fields) => {
+            setRequiredTabs(fields.required);
+            setAdditionalInfoTabs(fields.additionalInfo);
+            setMetaFields(fields.meta);
+        });
+    }, [resource]);
+
+    const [id, setId] = useState(null);
+    const [database, setDatabase] = useState(null);
+    const [version, setVersion] = useState(null);
+
+    useEffect(() => {
+        if (router.isReady && (id === null || database === null || version === null)) {
+            const url = router.asPath.split('#')[0].split('?')[0].split('/')
+            if (url.includes("resources")) {
+                setId(url[url.indexOf("resources") + 1])
             }
-            else
-                setResource(resource)
-            setLoading(false)
-        }
-        if (router.isReady && router.query !== undefined) {
-            const url = router.asPath.split("/")
-            const id = url[2]
-            fetchResource(id);
+            let params = []
+            if (router.asPath.includes('?')) {
+                params = router.asPath.split('#')[0].split('?')[1].split('&')
+            }
+            params.forEach(param => {
+                const [key, value] = param.split('=')
+                if (key === 'database') {
+                    setDatabase(value)
+                }
+                else if (key === 'version') {
+                    setVersion(value)
+                }
+            })
         }
     }, [router.isReady])
+
+    useEffect(() => {
+        async function fetchResource() {
+            setLoading(true)
+            let resource;
+            resource = await getResource(id, database, version)
+            if (resource.error) {
+                window.location.replace(process.env.BASE_PATH + "/404")
+            } else {
+                setResource(resource)
+            }
+            setLoading(false)
+        }
+        if (id !== null) {
+            fetchResource();
+        }
+    }, [id, database, version])
 
     useEffect(() => {
         function onTabletResize() { window.innerWidth <= 768 ? setIsTablet(true) : setIsTablet(false); }
@@ -43,26 +81,26 @@ function Resource() {
         window.addEventListener("resize", onTabletResize);
         return () => { window.removeEventListener("resize", onTabletResize) }
     }, [])
-    
+
     return (
-            <>
-                <Head>
-                    <title>{resource.id}</title>
-                    <meta name="description" content="Find the resource you need" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                </Head>
-                {showMetadata && isTablet ? <MetaData resource={resource ?? {}} showMetadata={showMetadata} setShowMetadata={setShowMetadata}/>:
-                    <Container className='mt-5 resources_page_container'>
-                        <Row>
-                            <Banner resource={resource ?? {}} setShowMetadata={setShowMetadata} />
-                        </Row>
-                        <Row>
-                            <ResourceTab resource={resource ?? {}} />
-                            <MetaData resource={resource ?? {}} className='ms-5' />
-                        </Row>
-                    </Container>
-                } 
-            </>
+        <>
+            <Head>
+                <title>{resource.id}</title>
+                <meta name="description" content="Find the resource you need" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </Head>
+            {showMetadata && isTablet ? <MetaData resource={resource ?? {}} showMetadata={showMetadata} setShowMetadata={setShowMetadata} /> :
+                <Container className='mt-5 resources_page_container'>
+                    <Row>
+                        <Banner resource={resource ?? {}} setShowMetadata={setShowMetadata} />
+                    </Row>
+                    <Row>
+                        <ResourceTab resource={resource ?? {}} requiredTabs={requiredTabs} additionalInfoTabs={additionalInfoTabs} />
+                        <MetaData resource={resource ?? {}} className='ms-5' metaFields={metaFields} />
+                    </Row>
+                </Container>
+            }
+        </>
     )
 }
 
